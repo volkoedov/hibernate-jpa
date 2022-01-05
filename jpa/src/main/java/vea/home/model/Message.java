@@ -1,13 +1,13 @@
 package vea.home.model;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-
-@Entity
 public class Message {
-    @Id
-    @GeneratedValue
+    public Message(String text) {
+        this.text = text;
+    }
+
+    protected Message() {
+    }
+
     private Long id;
 
     private String text;
@@ -18,5 +18,13 @@ public class Message {
 
     public void setText(String text) {
         this.text = text;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 }
