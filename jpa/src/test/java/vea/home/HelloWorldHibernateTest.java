@@ -2,7 +2,7 @@ package vea.home;
 
 import org.hibernate.Session;
 import org.junit.jupiter.api.Test;
-import vea.home.model.Message;
+import vea.home.entities.Message;
 import vea.home.utils.HibernateUtil;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -14,7 +14,9 @@ class HelloWorldHibernateTest {
                 .openSession();
         session.beginTransaction();
         Message message = new Message("Hello world!");
+
         session.save(message);
+
         session.getTransaction().commit();
         session.close();
 
