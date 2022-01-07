@@ -14,8 +14,7 @@ public class Guide {
     private String name;
     private Integer salary;
 
-    @OneToMany(mappedBy = "guide", cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
-    private Set<Student> students = new HashSet<>();
+
 
     protected Guide() {
     }
@@ -26,14 +25,5 @@ public class Guide {
         this.salary = salary;
     }
 
-    public void addStudent(Student student) {
-        student.setGuide(this);
-        students.add(student);
 
-    }
-
-    public void removeStudent(Student student){
-        students.remove(student);
-        student.setGuide(null);
-    }
 }
