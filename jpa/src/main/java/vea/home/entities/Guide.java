@@ -14,6 +14,9 @@ public class Guide {
     private String name;
     private Integer salary;
 
+    @OneToMany(mappedBy = "guide", orphanRemoval = true)
+    private Set<Student> students=new HashSet<>();
+
 
 
     protected Guide() {

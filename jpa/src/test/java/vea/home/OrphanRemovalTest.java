@@ -15,12 +15,12 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-class CascadeTest {
+class OrphanRemovalTest {
 
 
     @Test
     @Order(1)
-    void successStoringTest() {
+    void successCreateTest() {
 
         Transaction transaction = null;
         Session session = HibernateUtil.getSessionFactory().openSession();
@@ -35,11 +35,33 @@ class CascadeTest {
             session.persist(student);
             session.persist(student2);
 
-            List<Student> students = session.createQuery("select s from Student s where s.guide=:guide", Student.class)
-                    .setParameter("guide", student.getGuide())
-                    .getResultList();
+            transaction.commit();
 
-            assertEquals(2, students.size());
+        } catch (Exception e) {
+            e.printStackTrace();
+            if (transaction != null) {
+                transaction.rollback();
+            }
+        }finally {
+            if (session!=null){
+                session.close();
+            }
+        }
+    }
+
+    @Test
+    @Order(2)
+    void successRemovalTest() {
+
+        Transaction transaction = null;
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        //noinspection TryFinallyCanBeTryWithResources
+        try  {
+            transaction = session.beginTransaction();
+
+            Student student = session.get(Student.class,1L);
+            session.delete(student);
+
             transaction.commit();
 
         } catch (Exception e) {
