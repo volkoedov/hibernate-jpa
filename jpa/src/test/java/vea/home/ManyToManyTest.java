@@ -6,15 +6,15 @@ import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
-import vea.home.entities.Actor;
-import vea.home.entities.Movie;
+import vea.home.entities.Employee;
+import vea.home.entities.EmployeeStatus;
 import vea.home.utils.HibernateUtil;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-class ManyToManyTest {
+class EnumeratedTest {
 
 
     @Test
@@ -27,19 +27,13 @@ class ManyToManyTest {
         try {
             transaction = session.beginTransaction();
 
-            Movie movie1 = new Movie("American Hustle");
-            Movie movie2 = new Movie("The Prestige");
+            Employee employee1 = new Employee("1111", "Jeka", EmployeeStatus.FULL_TIME);
+            Employee employee2 = new Employee("2222", "Jeka1", EmployeeStatus.PART_TIME);
+            Employee employee3 = new Employee("3333", "Jeka2", EmployeeStatus.CONTRACT);
 
-            Actor actor1 = new Actor("Christian Bale");
-            Actor actor2 = new Actor("High Jackman");
-
-            movie1.getActors().add(actor1);
-
-            movie2.getActors().add(actor1);
-            movie2.getActors().add(actor2);
-
-            session.persist(movie1);
-            session.persist(movie2);
+            session.persist(employee1);
+            session.persist(employee2);
+            session.persist(employee3);
 
             transaction.commit();
 
@@ -58,7 +52,7 @@ class ManyToManyTest {
 
     @Test
     @Order(2)
-    void successUpdateTest() {
+    void successGetTest() {
 
         Transaction transaction = null;
         Session session = HibernateUtil.getSessionFactory().openSession();
@@ -66,10 +60,9 @@ class ManyToManyTest {
         try {
             transaction = session.beginTransaction();
 
-            Movie movie = session.get(Movie.class, 1L);
-            Actor actor = session.get(Actor.class, 4L);
+            Employee employee = session.get(Employee.class, 2L);
 
-            actor.addMovie(movie);
+            assertEquals(EmployeeStatus.PART_TIME,employee.getStatus());
 
             transaction.commit();
 
@@ -85,37 +78,5 @@ class ManyToManyTest {
             }
         }
     }
-
-
-    @Test
-    @Order(3)
-    void successRemoveTest() {
-
-        Transaction transaction = null;
-        Session session = HibernateUtil.getSessionFactory().openSession();
-        //noinspection TryFinallyCanBeTryWithResources
-        try {
-            transaction = session.beginTransaction();
-
-            Movie movie = session.get(Movie.class, 1L);
-            Actor actor = session.get(Actor.class, 4L);
-
-            actor.removeMovie(movie);
-
-            transaction.commit();
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            if (transaction != null) {
-                transaction.rollback();
-            }
-            fail("Такого быть не дожно!");
-        } finally {
-            if (session != null) {
-                session.close();
-            }
-        }
-    }
-
 
 }
