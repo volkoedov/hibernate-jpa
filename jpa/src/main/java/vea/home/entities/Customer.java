@@ -5,13 +5,13 @@ import javax.persistence.*;
 @Entity
 public class Customer {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     private String name;
 
     @OneToOne(cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
     @JoinColumn(name="passport_id")
+    @MapsId
     private Passport passport;
 
     public Customer(String name, Passport passport) {

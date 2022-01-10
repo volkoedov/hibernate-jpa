@@ -14,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-class OneTOneRelationTest {
+class MapsIdTest {
 
 
     @Test
@@ -30,37 +30,6 @@ class OneTOneRelationTest {
             Passport passport = new Passport("1-34");
             Customer customer = new Customer("Eugen", passport);
             session.persist(customer);
-
-            transaction.commit();
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            if (transaction != null) {
-                transaction.rollback();
-            }
-            fail("Такого быть не дожно!");
-        } finally {
-            if (session != null) {
-                session.close();
-            }
-        }
-    }
-
-    @Test
-    @Order(2)
-    void successRemovalTest() {
-
-        Transaction transaction = null;
-        Session session = HibernateUtil.getSessionFactory().openSession();
-        //noinspection TryFinallyCanBeTryWithResources
-        try {
-            transaction = session.beginTransaction();
-
-            Customer customer = session.get(Customer.class, 1L);
-
-            assertEquals("Eugen", customer.getName());
-            assertEquals("1-34", customer.getPassport().getPassportNumber());
-            session.delete(customer);
 
             transaction.commit();
 
