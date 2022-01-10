@@ -6,16 +6,15 @@ import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
-import vea.home.entities.Guide;
-import vea.home.entities.Student;
+import vea.home.entities.Customer;
+import vea.home.entities.Passport;
 import vea.home.utils.HibernateUtil;
 
-import java.util.List;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-class OrphanRemovalTest {
+class OneTOneRelationTest {
 
 
     @Test
@@ -25,15 +24,12 @@ class OrphanRemovalTest {
         Transaction transaction = null;
         Session session = HibernateUtil.getSessionFactory().openSession();
         //noinspection TryFinallyCanBeTryWithResources
-        try  {
+        try {
             transaction = session.beginTransaction();
 
-            Guide guide=new Guide("1","Dr. Volkoedov", 5000);
-            Student student = new Student("1", "Eugene", guide);
-            Student student2 = new Student("1", "Eugene #2", guide);
-
-            session.persist(student);
-            session.persist(student2);
+            Passport passport = new Passport("1-34");
+            Customer customer = new Customer("Eugen", passport);
+            session.persist(customer);
 
             transaction.commit();
 
@@ -42,8 +38,9 @@ class OrphanRemovalTest {
             if (transaction != null) {
                 transaction.rollback();
             }
-        }finally {
-            if (session!=null){
+            fail("Такого быть не дожно!");
+        } finally {
+            if (session != null) {
                 session.close();
             }
         }
@@ -56,11 +53,14 @@ class OrphanRemovalTest {
         Transaction transaction = null;
         Session session = HibernateUtil.getSessionFactory().openSession();
         //noinspection TryFinallyCanBeTryWithResources
-        try  {
+        try {
             transaction = session.beginTransaction();
 
-            Student student = session.get(Student.class,1L);
-            session.delete(student);
+            Customer customer = session.get(Customer.class, 1L);
+
+            assertEquals("Eugen", customer.getName());
+            assertEquals("1-34", customer.getPassport().getPassportNumber());
+            session.delete(customer);
 
             transaction.commit();
 
@@ -69,8 +69,9 @@ class OrphanRemovalTest {
             if (transaction != null) {
                 transaction.rollback();
             }
-        }finally {
-            if (session!=null){
+            fail("Такого быть не дожно!");
+        } finally {
+            if (session != null) {
                 session.close();
             }
         }

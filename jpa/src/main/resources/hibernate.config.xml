@@ -23,8 +23,8 @@
 
         <property name="hibernate.connection.isolation">2</property>
 
-        <mapping class="vea.home.entities.Student"/>
-        <mapping class="vea.home.entities.Guide"/>
+        <mapping class="vea.home.entities.Customer"/>
+        <mapping class="vea.home.entities.Passport"/>
 
     </session-factory>
 </hibernate-configuration>
