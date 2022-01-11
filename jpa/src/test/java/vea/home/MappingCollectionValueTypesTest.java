@@ -6,15 +6,15 @@ import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
-import vea.home.entities.Employee;
-import vea.home.entities.EmployeeStatus;
+import vea.home.entities.Address;
+import vea.home.entities.Friend;
 import vea.home.utils.HibernateUtil;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-class EnumeratedTest {
+class MappingCollectionValueTypesTest {
 
 
     @Test
@@ -27,13 +27,16 @@ class EnumeratedTest {
         try {
             transaction = session.beginTransaction();
 
-            Employee employee1 = new Employee("1111", "Jeka", EmployeeStatus.FULL_TIME);
-            Employee employee2 = new Employee("2222", "Jeka1", EmployeeStatus.PART_TIME);
-            Employee employee3 = new Employee("3333", "Jeka2", EmployeeStatus.CONTRACT);
+            Friend friend = new Friend("Eugen", "volkoedov@gmail.com");
 
-            session.persist(employee1);
-            session.persist(employee2);
-            session.persist(employee3);
+            friend.getNickNames().add("Jonny");
+            friend.getNickNames().add("Dwolf");
+            friend.getNickNames().add("Evgeniy");
+
+            friend.getAddresses().add(new Address("11", "Elm St. 1", "New York"));
+            friend.getAddresses().add(new Address("11", "Elm St. 3", "New York"));
+
+            session.persist(friend);
 
             transaction.commit();
 
@@ -51,18 +54,20 @@ class EnumeratedTest {
     }
 
     @Test
-    @Order(2)
-    void successGetTest() {
+    @Order(1)
+    void successRetrievingTest() {
 
         Transaction transaction = null;
         Session session = HibernateUtil.getSessionFactory().openSession();
         //noinspection TryFinallyCanBeTryWithResources
         try {
             transaction = session.beginTransaction();
+            Friend friend = session.get(Friend.class, 1L);
 
-            Employee employee = session.get(Employee.class, 2L);
+            System.out.println(friend);
+            assertEquals(3, friend.getNickNames().size());
+            assertEquals(2, friend.getAddresses().size());
 
-            assertEquals(EmployeeStatus.PART_TIME,employee.getStatus());
 
             transaction.commit();
 
@@ -78,5 +83,6 @@ class EnumeratedTest {
             }
         }
     }
+
 
 }
