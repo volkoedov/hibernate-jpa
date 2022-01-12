@@ -23,7 +23,9 @@
 
         <property name="hibernate.connection.isolation">2</property>
 
-        <mapping class="vea.home.entities.Friend"/>
+        <mapping class="vea.home.entities.Chapter"/>
+        <mapping class="vea.home.entities.Book"/>
+        <mapping class="vea.home.entities.Publisher"/>
 
     </session-factory>
 </hibernate-configuration>
