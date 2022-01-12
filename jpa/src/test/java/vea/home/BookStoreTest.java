@@ -1,7 +1,6 @@
 package vea.home;
 
-import org.hibernate.Session;
-import org.hibernate.Transaction;
+
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -10,7 +9,10 @@ import vea.home.entities.Book;
 import vea.home.entities.Chapter;
 import vea.home.entities.ChapterCompositeId;
 import vea.home.entities.Publisher;
-import vea.home.utils.HibernateUtil;
+import vea.home.utils.JPAUtils;
+
+import javax.persistence.EntityManager;
+import javax.persistence.EntityTransaction;
 
 import static org.junit.jupiter.api.Assertions.fail;
 
@@ -22,25 +24,25 @@ class BookStoreTest {
     @Order(1)
     void successCreateTest() {
 
-        Transaction transaction = null;
-        Session session = HibernateUtil.getSessionFactory().openSession();
-        //noinspection TryFinallyCanBeTryWithResources
-        try {
-            transaction = session.beginTransaction();
+        EntityManager entityManager = JPAUtils.getEntityManagerFactory().createEntityManager();
 
+        EntityTransaction transaction = entityManager.getTransaction();
+
+        try {
+            transaction.begin();
 
             Publisher publisher = new Publisher("123", "Volkoedov Publisher Ltd");
             Book book = new Book("1", "Book about Me", publisher);
 
             ChapterCompositeId id1 = new ChapterCompositeId("1");
-            Chapter chapter1 = new Chapter(id1,"Глава1. Начало");
+            Chapter chapter1 = new Chapter(id1, "Глава1. Начало");
             book.addChapter(chapter1);
 
             ChapterCompositeId id2 = new ChapterCompositeId("2");
             Chapter chapter2 = new Chapter(id2, "Глава2. Конец");
             book.addChapter(chapter2);
 
-            session.persist(book);
+            entityManager.persist(book);
 
             transaction.commit();
 
@@ -51,24 +53,21 @@ class BookStoreTest {
             }
             fail("Такого быть не дожно!");
         } finally {
-            if (session != null) {
-                session.close();
-            }
+            entityManager.close();
         }
     }
 
     @Test
     @Order(2)
-    void successReadTest() {
+    void successGetTest() {
 
-        Transaction transaction = null;
-        Session session = HibernateUtil.getSessionFactory().openSession();
-        //noinspection TryFinallyCanBeTryWithResources
+        EntityManager entityManager = JPAUtils.getEntityManagerFactory().createEntityManager();
+        EntityTransaction transaction = entityManager.getTransaction();
+
         try {
-            transaction = session.beginTransaction();
+            transaction.begin();
 
-
-            Book book = session.get(Book.class, "1");
+            Book book = entityManager.find(Book.class, "1");
             System.out.println(book);
 
             transaction.commit();
@@ -80,9 +79,10 @@ class BookStoreTest {
             }
             fail("Такого быть не дожно!");
         } finally {
-            if (session != null) {
-                session.close();
-            }
+            entityManager.close();
+
         }
     }
+
+
 }
