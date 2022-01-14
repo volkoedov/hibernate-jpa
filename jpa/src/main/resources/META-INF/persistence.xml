@@ -1,20 +1,50 @@
-<persistence xmlns="http://xmlns.jcp.org/xml/ns/persistence" version="2.1">
-    <persistence-unit name="HelloWorldPU">
-        <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
-        <class>vea.home.model.Message</class>
-        <exclude-unlisted-classes>true</exclude-unlisted-classes>
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd"
+             version="2.0" xmlns="http://java.sun.com/xml/ns/persistence">
+
+    <persistence-unit name="hello-world" transaction-type="RESOURCE_LOCAL">
         <properties>
-            <property name="hibernate.connection.url" value="jdbc:postgresql://localhost:5432/postgres"/>
-            <property name="hibernate.connection.driver_class" value="org.postgresql.Driver"/>
-            <property name="hibernate.connection.username" value="postgres"/>
-            <property name="hibernate.connection.password" value="volk123"/>
 
-            <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQL10Dialect"/>
-            <property name="javax.persistence.schema-generation.database.action" value="drop-and-create"/>
-            <property name="hibernate.format_sql" value="true"/>
-            <property name="use_sql_comments" value="true"/>
-            
+            <!-- Database connection settings -->
+            <!--suppress JpaDomInspection -->
+            <property name="javax.persistence.jdbc.driver" value="org.postgresql.Driver" />
+            <property name="javax.persistence.jdbc.url" value="jdbc:postgresql://localhost:5432/postgres" />
+            <property name="javax.persistence.jdbc.user" value="postgres" />
+            <property name="javax.persistence.jdbc.password" value="Volk123" />
 
+            <!-- SQL dialect -->
+            <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQL10Dialect" />
+
+            <!-- Create/update tables automatically using mapping metadata -->
+            <property name="hibernate.hbm2ddl.auto" value="create" />
+
+            <!-- Pretty print the SQL in the log file and console -->
+            <property name="hibernate.format_sql" value="true" />
+            <property name="hibernate.use_sql_comments" value="true"/>
+            <property name="hibernate.generate_statistics" value="true"/>
+
+
+            <property name="hibernate.c3p0.min_size" value="5"/>
+            <property name="hibernate.c3p0.max_size" value="20"/>
+            <property name="hibernate.c3p0.acquire_increment" value="5"/>
+            <property name="hibernate.c3p0.timeout" value="1800"/>
+
+            <property name="hibernate.connection.isolation" value="2"/>
         </properties>
+
     </persistence-unit>
 </persistence>
+
+
+
+
+
+
+
+
+
+
+
+
+
