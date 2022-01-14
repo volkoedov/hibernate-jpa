@@ -35,7 +35,7 @@ public class Guide {
 	private Integer salary;
 	
 	@OneToMany(mappedBy="guide", cascade={CascadeType.PERSIST})
-	private Set<Student> students = new HashSet<Student>();	
+	private final Set<Student> students = new HashSet<Student>();
 	
 	public Guide() {}
 	public Guide(String staffId, String name, Integer salary) {
