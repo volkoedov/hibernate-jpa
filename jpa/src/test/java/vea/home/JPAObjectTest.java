@@ -5,13 +5,10 @@ import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
-import vea.home.entities.Guide;
 import vea.home.entities.Message;
-import vea.home.entities.Student;
 import vea.home.utils.JPAUtils;
 
 import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 
 import static org.junit.jupiter.api.Assertions.fail;
@@ -22,7 +19,7 @@ class JPAObjectTest {
 
     @Test
     @Order(1)
-    void successQuestion1Test() {
+    void successPersistTest() {
 
         EntityManager entityManager = JPAUtils.getEntityManagerFactory().createEntityManager();
 
@@ -34,8 +31,6 @@ class JPAObjectTest {
             Message message = new Message("Hello");
 
             entityManager.persist(message);
-
-            entityManager.detach(message);
 
             transaction.commit();
 
@@ -50,30 +45,37 @@ class JPAObjectTest {
         }
     }
 
+
     @Test
     @Order(2)
-    void successQuestion2Test() {
+    void successQuestion1Test() {
 
-        EntityManagerFactory emf = JPAUtils.getEntityManagerFactory();
+        EntityManager entityManager = JPAUtils.getEntityManagerFactory().createEntityManager();
 
-        EntityManager em1 = emf.createEntityManager();
-        em1.getTransaction().begin();
+        EntityTransaction transaction = entityManager.getTransaction();
 
-        Guide guide = new Guide("2000RN10349", "Rose Ann", 4000);
-        em1.persist(guide);
+        try {
+            transaction.begin();
 
-        em1.getTransaction().commit();
-        em1.close();
+            Message message = entityManager.find(Message.class, 1L);
 
-        EntityManager em2 = emf.createEntityManager();
-        em2.getTransaction().begin();
+            message = entityManager.merge(message);
+            entityManager.detach(message);
+            entityManager.remove(message);
+            message = entityManager.merge(message);
+            System.out.println(entityManager.contains(message));
 
-        Guide mergedGuide = em2.merge(guide);
-        mergedGuide.addStudent(new Student("2015JR50244", "Jason Bird"));
-        mergedGuide.addStudent(new Student("2015LK50878", "Lisa Mizuki"));
+            transaction.commit();
 
-        em2.getTransaction().commit();
-        em2.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+            if (transaction != null) {
+                transaction.rollback();
+            }
+            fail("Такого быть не дожно!");
+        } finally {
+            entityManager.close();
+        }
     }
 
 
