@@ -5,11 +5,14 @@ import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
-import vea.home.entities.Message;
+import vea.home.entities.Guide;
+import vea.home.entities.Student;
 import vea.home.utils.JPAUtils;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
+
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.fail;
 
@@ -28,9 +31,12 @@ class JPAObjectTest {
         try {
             transaction.begin();
 
-            Message message = new Message("Hello");
+            Guide guide = new Guide("1", "Jeka", 5000);
+            Student student = new Student("1", "Eugene", guide);
+            entityManager.persist(student);
 
-            entityManager.persist(message);
+            student = new Student("2", "Olusha", guide);
+            entityManager.persist(student);
 
             transaction.commit();
 
@@ -48,7 +54,7 @@ class JPAObjectTest {
 
     @Test
     @Order(2)
-    void successQuestion1Test() {
+    void successFetchTest() {
 
         EntityManager entityManager = JPAUtils.getEntityManagerFactory().createEntityManager();
 
@@ -57,13 +63,10 @@ class JPAObjectTest {
         try {
             transaction.begin();
 
-            Message message = entityManager.find(Message.class, 1L);
-
-            message = entityManager.merge(message);
-            entityManager.detach(message);
-            entityManager.remove(message);
-            message = entityManager.merge(message);
-            System.out.println(entityManager.contains(message));
+            Student student = entityManager.find(Student.class, 3L);
+            Guide guide = entityManager.find(Guide.class, 2L);
+            Set<Student> students = guide.getStudents();
+            System.out.println(students.contains(student));
 
             transaction.commit();
 
