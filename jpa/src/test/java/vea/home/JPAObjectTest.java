@@ -12,12 +12,15 @@ import vea.home.utils.JPAUtils;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.fail;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-class JPAObjectTest {
+class  JPAObjectTest {
 
 
     @Test
@@ -63,9 +66,14 @@ class JPAObjectTest {
         try {
             transaction.begin();
 
-            TypedQuery<Guide> query = entityManager.createQuery("select distinct guide from Guide guide join fetch  guide.students students", Guide.class);
-            List<Guide> resultList = query.getResultList();
-            System.out.println(resultList);
+            CriteriaBuilder builder = entityManager.getCriteriaBuilder();
+            CriteriaQuery<Guide> criteria = builder.createQuery(Guide.class);
+            Root<Guide> root = criteria.from(Guide.class);
+            criteria.select(root);
+
+            TypedQuery<Guide> query = entityManager.createQuery(criteria);
+            List<Guide> guides = query.getResultList();
+            guides.forEach(System.out::print);
 
             transaction.commit();
 
