@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 import vea.home.entities.Guide;
+import vea.home.entities.Guide_;
 import vea.home.entities.Student;
 import vea.home.utils.JPAUtils;
 
@@ -21,7 +22,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.fail;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-class  JPAObjectTest {
+class JPAObjectTest {
 
 
     @Test
@@ -68,14 +69,15 @@ class  JPAObjectTest {
             transaction.begin();
 
             CriteriaBuilder builder = entityManager.getCriteriaBuilder();
-            CriteriaQuery<String> criteria = builder.createQuery(String.class);
+            CriteriaQuery<Object[]> criteria = builder.createQuery(Object[].class);
             Root<Guide> root = criteria.from(Guide.class);
-            Path<String> name = root.get("name");
-            criteria.select(name);
+            Path<String> name = root.get(Guide_.name);
+            Path<Integer> salary = root.get(Guide_.salary);
+            criteria.multiselect(name, salary);
 
-            TypedQuery<String> query = entityManager.createQuery(criteria);
-            List<String> guides = query.getResultList();
-            guides.forEach(System.out::print);
+            TypedQuery<Object[]> query = entityManager.createQuery(criteria);
+            List<Object[]> guides = query.getResultList();
+            guides.forEach(g -> System.out.println("name: " + g[0] + ", salary: " + g[1]));
 
             transaction.commit();
 
