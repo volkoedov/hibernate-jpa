@@ -11,8 +11,8 @@ import vea.home.utils.JPAUtils;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
-
-import java.util.Set;
+import javax.persistence.TypedQuery;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.fail;
 
@@ -63,10 +63,9 @@ class JPAObjectTest {
         try {
             transaction.begin();
 
-            Student student = entityManager.find(Student.class, 3L);
-            Guide guide = entityManager.find(Guide.class, 2L);
-            Set<Student> students = guide.getStudents();
-            System.out.println(students.contains(student));
+            TypedQuery<Guide> query = entityManager.createQuery("select distinct guide from Guide guide join fetch  guide.students students", Guide.class);
+            List<Guide> resultList = query.getResultList();
+            System.out.println(resultList);
 
             transaction.commit();
 
