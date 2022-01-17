@@ -14,6 +14,7 @@ import javax.persistence.EntityTransaction;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Root;
 import java.util.List;
 
@@ -67,12 +68,13 @@ class  JPAObjectTest {
             transaction.begin();
 
             CriteriaBuilder builder = entityManager.getCriteriaBuilder();
-            CriteriaQuery<Guide> criteria = builder.createQuery(Guide.class);
+            CriteriaQuery<String> criteria = builder.createQuery(String.class);
             Root<Guide> root = criteria.from(Guide.class);
-            criteria.select(root);
+            Path<String> name = root.get("name");
+            criteria.select(name);
 
-            TypedQuery<Guide> query = entityManager.createQuery(criteria);
-            List<Guide> guides = query.getResultList();
+            TypedQuery<String> query = entityManager.createQuery(criteria);
+            List<String> guides = query.getResultList();
             guides.forEach(System.out::print);
 
             transaction.commit();
