@@ -3,7 +3,7 @@ package vea.home.entities;
 import javax.persistence.*;
 
 @Entity
-@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@Inheritance(strategy = InheritanceType.JOINED)
 public abstract class Animal {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
