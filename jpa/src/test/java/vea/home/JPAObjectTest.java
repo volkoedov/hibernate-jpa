@@ -39,6 +39,7 @@ class JPAObjectTest {
 
             Cat cat = new Cat();
             cat.setName("Lucy");
+            cat.setFluffy(Boolean.TRUE);
 
             Dog dog = new Dog();
             dog.setName("Oliver");
