@@ -5,9 +5,9 @@ import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
-import vea.home.entities.Guide;
-import vea.home.entities.Guide_;
-import vea.home.entities.Student;
+import vea.home.entities.Animal;
+import vea.home.entities.Cat;
+import vea.home.entities.Dog;
 import vea.home.utils.JPAUtils;
 
 import javax.persistence.EntityManager;
@@ -19,6 +19,7 @@ import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Root;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
@@ -27,7 +28,7 @@ class JPAObjectTest {
 
     @Test
     @Order(1)
-    void successPersistTest() {
+    void persistTest() {
 
         EntityManager entityManager = JPAUtils.getEntityManagerFactory().createEntityManager();
 
@@ -36,12 +37,14 @@ class JPAObjectTest {
         try {
             transaction.begin();
 
-            Guide guide = new Guide("1", "Jeka", 5000);
-            Student student = new Student("1", "Eugene", guide);
-            entityManager.persist(student);
+            Cat cat = new Cat();
+            cat.setName("Lucy");
 
-            student = new Student("2", "Olusha", guide);
-            entityManager.persist(student);
+            Dog dog = new Dog();
+            dog.setName("Oliver");
+
+            entityManager.persist(cat);
+            entityManager.persist(dog);
 
             transaction.commit();
 
@@ -56,10 +59,9 @@ class JPAObjectTest {
         }
     }
 
-
     @Test
     @Order(2)
-    void successFetchTest() {
+    void findTest() {
 
         EntityManager entityManager = JPAUtils.getEntityManagerFactory().createEntityManager();
 
@@ -68,16 +70,19 @@ class JPAObjectTest {
         try {
             transaction.begin();
 
-            CriteriaBuilder builder = entityManager.getCriteriaBuilder();
-            CriteriaQuery<Object[]> criteria = builder.createQuery(Object[].class);
-            Root<Guide> root = criteria.from(Guide.class);
-            Path<String> name = root.get(Guide_.name);
-            Path<Integer> salary = root.get(Guide_.salary);
-            criteria.multiselect(name, salary);
+            TypedQuery<Animal> query1 = entityManager.createQuery("select animal from Animal as animal", Animal.class);
+            List<Animal> animals = query1.getResultList();
 
-            TypedQuery<Object[]> query = entityManager.createQuery(criteria);
-            List<Object[]> guides = query.getResultList();
-            guides.forEach(g -> System.out.println("name: " + g[0] + ", salary: " + g[1]));
+            animals.forEach(System.out::println);
+            animals.forEach(a -> System.out.println(a.makeNoise()));
+            assertEquals(2, animals.size());
+
+            TypedQuery<Dog> query2 = entityManager.createQuery("select dog from Dog as dog", Dog.class);
+            List<Dog> dogs = query2.getResultList();
+
+            dogs.forEach(System.out::println);
+            dogs.forEach(a -> System.out.println(a.makeNoise()));
+            assertEquals(1, dogs.size());
 
             transaction.commit();
 
