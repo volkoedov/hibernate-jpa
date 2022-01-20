@@ -12,10 +12,8 @@ import vea.home.utils.JPAUtils;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 import javax.persistence.TypedQuery;
-import java.math.BigDecimal;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
@@ -75,7 +73,7 @@ class JPAObjectTest {
 
             TypedQuery<Student> query = entityManager.createQuery("select student from Student student", Student.class);
             List<Student> students = query.getResultList();
-            students.forEach(s-> System.out.printf("Student name= %s, enrolmentId = %s%n",s.getName(),s.getEnrollmentId()));
+            students.forEach(s-> System.out.printf("Student name= %s, enrolmentId = %s, guide = %s%n",s.getName(),s.getEnrollmentId(),s.getGuide()==null?"":s.getGuide().getName()));
 
             transaction.commit();
 

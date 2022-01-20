@@ -40,4 +40,8 @@ public class Guide {
         students.remove(student);
         student.setGuide(null);
     }
+
+    public String getName() {
+        return name;
+    }
 }
