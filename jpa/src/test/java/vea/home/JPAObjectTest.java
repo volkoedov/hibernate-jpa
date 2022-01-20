@@ -71,7 +71,7 @@ class JPAObjectTest {
         try {
             transaction.begin();
 
-            TypedQuery<Student> query = entityManager.createQuery("select student from Student student", Student.class);
+            TypedQuery<Student> query = entityManager.createQuery("select student from Student student left join fetch student.guide", Student.class);
             List<Student> students = query.getResultList();
             students.forEach(s-> System.out.printf("Student name= %s, enrolmentId = %s, guide = %s%n",s.getName(),s.getEnrollmentId(),s.getGuide()==null?"":s.getGuide().getName()));
 
