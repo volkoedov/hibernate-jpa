@@ -5,18 +5,14 @@ import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
-import vea.home.entities.Animal;
-import vea.home.entities.Cat;
-import vea.home.entities.Dog;
+import vea.home.entities.Guide;
+import vea.home.entities.Student;
 import vea.home.utils.JPAUtils;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 import javax.persistence.TypedQuery;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Path;
-import javax.persistence.criteria.Root;
+import java.math.BigDecimal;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -36,16 +32,22 @@ class JPAObjectTest {
 
         try {
             transaction.begin();
+            Guide guide1 = new Guide("1", "Guide1", 5500);
+            Guide guide2 = new Guide("2", "Guide2", 5200);
+            Guide guide3 = new Guide("3", "Guide3", 5345);
 
-            Cat cat = new Cat();
-            cat.setName("Lucy");
-            cat.setFluffy(Boolean.TRUE);
+            Student student1 = new Student("1245", "Student1", guide1);
+            Student student2 = new Student("1246", "Student2", guide1);
+            Student student3 = new Student("1247", "Student3", null);
+            Student student4 = new Student("1248", "Student4", guide2);
+            Student student5 = new Student("1249", "Student5", guide3);
 
-            Dog dog = new Dog();
-            dog.setName("Oliver");
+            entityManager.persist(student1);
+            entityManager.persist(student2);
+            entityManager.persist(student3);
+            entityManager.persist(student4);
+            entityManager.persist(student5);
 
-            entityManager.persist(cat);
-            entityManager.persist(dog);
 
             transaction.commit();
 
@@ -71,19 +73,9 @@ class JPAObjectTest {
         try {
             transaction.begin();
 
-            TypedQuery<Animal> query1 = entityManager.createQuery("select animal from Animal as animal", Animal.class);
-            List<Animal> animals = query1.getResultList();
-
-            animals.forEach(System.out::println);
-            animals.forEach(a -> System.out.println(a.makeNoise()));
-            assertEquals(2, animals.size());
-
-            TypedQuery<Dog> query2 = entityManager.createQuery("select dog from Dog as dog", Dog.class);
-            List<Dog> dogs = query2.getResultList();
-
-            dogs.forEach(System.out::println);
-            dogs.forEach(a -> System.out.println(a.makeNoise()));
-            assertEquals(1, dogs.size());
+            TypedQuery<Student> query = entityManager.createQuery("select student from Student student", Student.class);
+            List<Student> students = query.getResultList();
+            students.forEach(s-> System.out.printf("Student name= %s, enrolmentId = %s%n",s.getName(),s.getEnrollmentId()));
 
             transaction.commit();
 
