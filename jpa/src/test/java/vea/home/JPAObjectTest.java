@@ -1,6 +1,8 @@
 package vea.home;
 
 
+import com.mchange.util.AssertException;
+import org.hibernate.Session;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -11,8 +13,7 @@ import vea.home.utils.JPAUtils;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
-import javax.persistence.TypedQuery;
-import java.util.List;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.fail;
 
@@ -39,6 +40,11 @@ class JPAObjectTest {
             Student student3 = new Student("1247", "Student3", null);
             Student student4 = new Student("1248", "Student4", guide2);
             Student student5 = new Student("1249", "Student5", guide3);
+
+            entityManager.persist(guide1);
+            entityManager.persist(guide2);
+            entityManager.persist(guide3);
+
 
             entityManager.persist(student1);
             entityManager.persist(student2);
@@ -67,13 +73,40 @@ class JPAObjectTest {
         EntityManager entityManager = JPAUtils.getEntityManagerFactory().createEntityManager();
 
         EntityTransaction transaction = entityManager.getTransaction();
+        Guide guide=null;
+        Student student=null;
+        try {
+            transaction.begin();
+
+            guide = entityManager.find(Guide.class, 1L);
+            Set<Student> students = guide.getStudents();
+            student = students.stream()
+                    .filter(s -> s.getId() == 4L)
+                    .findFirst()
+                    .orElseThrow(() -> new AssertException("Такого быть не должно!"));
+
+            transaction.commit();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            if (transaction != null) {
+                transaction.rollback();
+            }
+            fail("Такого быть не дожно!");
+        } finally {
+            entityManager.close();
+        }
+
+        guide.setSalary(2500);
+        student.setName("Amy Jade Gill");
+
+        entityManager = JPAUtils.getEntityManagerFactory().createEntityManager();
+        transaction = entityManager.getTransaction();
 
         try {
             transaction.begin();
 
-            TypedQuery<Student> query = entityManager.createQuery("select student from Student student left join fetch student.guide", Student.class);
-            List<Student> students = query.getResultList();
-            students.forEach(s-> System.out.printf("Student name= %s, enrolmentId = %s, guide = %s%n",s.getName(),s.getEnrollmentId(),s.getGuide()==null?"":s.getGuide().getName()));
+            entityManager.merge(guide);
 
             transaction.commit();
 

@@ -10,9 +10,13 @@ public class Student {
 
     private String enrollmentId;
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
     private String name;
 
-    @ManyToOne(cascade = {CascadeType.PERSIST,CascadeType.REMOVE},fetch =  FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "guide_id")
     private Guide guide;
 
@@ -39,5 +43,9 @@ public class Student {
 
     public String getEnrollmentId() {
         return enrollmentId;
+    }
+
+    public Long getId() {
+        return id;
     }
 }

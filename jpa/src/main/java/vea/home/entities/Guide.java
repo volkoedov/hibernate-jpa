@@ -1,10 +1,13 @@
 package vea.home.entities;
 
+import org.hibernate.annotations.BatchSize;
+
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
 
 @Entity
+@BatchSize(size = 3)
 public class Guide {
     @Id
     @GeneratedValue
@@ -18,7 +21,7 @@ public class Guide {
         return students;
     }
 
-    @OneToMany(mappedBy = "guide", cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
+    @OneToMany(mappedBy = "guide", cascade = {CascadeType.MERGE})
     private Set<Student> students = new HashSet<>();
 
     protected Guide() {
@@ -43,5 +46,9 @@ public class Guide {
 
     public String getName() {
         return name;
+    }
+
+    public void setSalary(Integer salary) {
+        this.salary = salary;
     }
 }
