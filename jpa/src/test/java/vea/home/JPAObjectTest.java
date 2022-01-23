@@ -1,9 +1,8 @@
 package vea.home;
 
 
-import com.mchange.util.AssertException;
-import net.sf.ehcache.CacheManager;
-import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.stat.Statistics;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -14,9 +13,7 @@ import vea.home.utils.JPAUtils;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
-import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
@@ -71,24 +68,18 @@ class JPAObjectTest {
     @Test
     @Order(2)
     void findTest() {
-        int size = CacheManager.ALL_CACHE_MANAGERS.get(0)
-                .getCache("vea.home.entities.Student").getSize();
-        assertEquals(5, size);
-
+        Statistics statistics = JPAUtils.getEntityManagerFactory().unwrap(SessionFactory.class).getStatistics();
         EntityManager entityManager = JPAUtils.getEntityManagerFactory().createEntityManager();
 
         EntityTransaction transaction = entityManager.getTransaction();
-        Guide guide=null;
-        Student student=null;
+
+
         try {
             transaction.begin();
 
-            guide = entityManager.find(Guide.class, 1L);
-            Set<Student> students = guide.getStudents();
-            student = students.stream()
-                    .filter(s -> s.getId() == 4L)
-                    .findFirst()
-                    .orElseThrow(() -> new AssertException("Такого быть не должно!"));
+            Guide guide = entityManager.find(Guide.class, 1L);
+            int size = guide.getStudents().size();
+            System.out.println(size);
 
             transaction.commit();
 
@@ -102,8 +93,6 @@ class JPAObjectTest {
             entityManager.close();
         }
 
-        guide.setSalary(2500);
-        student.setName("Amy Jade Gill");
 
         entityManager = JPAUtils.getEntityManagerFactory().createEntityManager();
         transaction = entityManager.getTransaction();
@@ -111,7 +100,9 @@ class JPAObjectTest {
         try {
             transaction.begin();
 
-            entityManager.merge(guide);
+            Guide guide = entityManager.find(Guide.class, 1L);
+            int size = guide.getStudents().size();
+            System.out.println(size);
 
             transaction.commit();
 
@@ -124,6 +115,8 @@ class JPAObjectTest {
         } finally {
             entityManager.close();
         }
+        System.out.println("Guide: " + statistics.getCacheRegionStatistics("vea.home.entities.Guide"));
+        System.out.println("Student: " + statistics.getCacheRegionStatistics("vea.home.entities.Student"));
     }
 
 

@@ -1,6 +1,8 @@
 package vea.home.entities;
 
 import org.hibernate.annotations.BatchSize;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import javax.persistence.*;
 import java.util.HashSet;
@@ -8,6 +10,7 @@ import java.util.Set;
 
 @Entity
 @BatchSize(size = 3)
+@Cacheable
 public class Guide {
     @Id
     @GeneratedValue
@@ -22,6 +25,7 @@ public class Guide {
     }
 
     @OneToMany(mappedBy = "guide", cascade = {CascadeType.MERGE})
+    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private Set<Student> students = new HashSet<>();
 
     protected Guide() {
@@ -50,5 +54,9 @@ public class Guide {
 
     public void setSalary(Integer salary) {
         this.salary = salary;
+    }
+
+    public Integer getSalary() {
+        return salary;
     }
 }

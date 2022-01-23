@@ -1,5 +1,7 @@
 package vea.home.entities;
 
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+
 import javax.persistence.*;
 
 @Entity

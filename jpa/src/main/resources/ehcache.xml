@@ -5,10 +5,18 @@
 		 dynamicConfig="true">
 
 	<cache name="vea.home.entities.Student"
-		   maxElementsInMemory="3"
+		   maxElementsInMemory="1000"
+		   eternal="true"
+		   overflowToDisk="false"/>
+	<cache name="vea.home.entities.Guide"
+		   maxElementsInMemory="1000"
 		   eternal="true"
 		   overflowToDisk="false"/>
 
+	<cache name="vea.home.entities.Guide.students"
+		   maxElementsInMemory="10000"
+		   eternal="true"
+		   overflowToDisk="false"/>
 
 </ehcache>
 
