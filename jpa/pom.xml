@@ -9,11 +9,13 @@
     <version>1.0-SNAPSHOT</version>
 
     <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <maven.compiler.source>15</maven.compiler.source>
         <maven.compiler.target>15</maven.compiler.target>
         <sonar.organization>volkoedov</sonar.organization>
         <sonar.host.url>https://sonarcloud.io</sonar.host.url>
-
+        <hibernate.version>5.6.3.Final</hibernate.version>
     </properties>
 
     <dependencyManagement>
@@ -29,20 +31,20 @@
             <dependency>
                 <groupId>org.hibernate</groupId>
                 <artifactId>hibernate-core</artifactId>
-                <version>5.6.3.Final</version>
+                <version>${hibernate.version}</version>
             </dependency>
 
             <dependency>
                 <groupId>org.hibernate</groupId>
                 <artifactId>hibernate-jpamodelgen</artifactId>
-                <version>5.6.3.Final</version>
+                <version>${hibernate.version}</version>
                 <scope>provided</scope>
             </dependency>
 
             <dependency>
                 <groupId>org.hibernate</groupId>
                 <artifactId>hibernate-c3p0</artifactId>
-                <version>5.6.3.Final</version>
+                <version>${hibernate.version}</version>
             </dependency>
 
             <dependency>
@@ -55,6 +57,12 @@
                 <groupId>ch.qos.logback</groupId>
                 <artifactId>logback-classic</artifactId>
                 <version>1.2.10</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.hibernate</groupId>
+                <artifactId>hibernate-ehcache</artifactId>
+                <version>${hibernate.version}</version>
             </dependency>
 
         </dependencies>
@@ -86,7 +94,7 @@
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
-            <version>1.7.32</version>
+            <version>1.7.33</version>
         </dependency>
         <dependency>
             <groupId>ch.qos.logback</groupId>
@@ -97,6 +105,11 @@
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-jpamodelgen</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-ehcache</artifactId>
         </dependency>
 
     </dependencies>
@@ -112,10 +125,6 @@
                     <target>17</target>
                     <encoding>UTF-8</encoding>
                 </configuration>
-            </plugin>
-            <plugin>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <version>2.12.4</version>
             </plugin>
         </plugins>
 

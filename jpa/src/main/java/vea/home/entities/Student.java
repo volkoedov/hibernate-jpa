@@ -3,6 +3,7 @@ package vea.home.entities;
 import javax.persistence.*;
 
 @Entity
+@Cacheable
 public class Student {
     @Id
     @GeneratedValue

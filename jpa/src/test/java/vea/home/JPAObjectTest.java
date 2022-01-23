@@ -2,6 +2,7 @@ package vea.home;
 
 
 import com.mchange.util.AssertException;
+import net.sf.ehcache.CacheManager;
 import org.hibernate.Session;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
@@ -15,6 +16,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 import java.util.Set;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
@@ -69,6 +71,9 @@ class JPAObjectTest {
     @Test
     @Order(2)
     void findTest() {
+        int size = CacheManager.ALL_CACHE_MANAGERS.get(0)
+                .getCache("vea.home.entities.Student").getSize();
+        assertEquals(5, size);
 
         EntityManager entityManager = JPAUtils.getEntityManagerFactory().createEntityManager();
 

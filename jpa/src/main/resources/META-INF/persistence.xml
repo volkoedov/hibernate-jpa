@@ -32,6 +32,10 @@
             <property name="hibernate.c3p0.timeout" value="1800"/>
 
             <property name="hibernate.connection.isolation" value="2"/>
+            
+            <property name="javax.persistence.sharedCache.mode" value="ENABLE_SELECTIVE"/>
+            <property name="hibernate.cache.region.factory_class" value="org.hibernate.cache.ehcache.internal.EhcacheRegionFactory"/>
+
         </properties>
 
     </persistence-unit>
