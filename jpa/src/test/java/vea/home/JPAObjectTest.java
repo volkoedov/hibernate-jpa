@@ -61,6 +61,7 @@ class JPAObjectTest {
             }
             fail("Такого быть не дожно!");
         } finally {
+            JPAUtils.getEntityManagerFactory().getCache().evictAll();
             entityManager.close();
         }
     }
